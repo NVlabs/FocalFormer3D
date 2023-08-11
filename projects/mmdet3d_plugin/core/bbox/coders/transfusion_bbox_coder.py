@@ -26,15 +26,47 @@ class TransFusionBBoxCoder(BaseBBoxCoder):
         targets[:, 0] = (dst_boxes[:, 0] - self.pc_range[0]) / (self.out_size_factor * self.voxel_size[0])
         targets[:, 1] = (dst_boxes[:, 1] - self.pc_range[1]) / (self.out_size_factor * self.voxel_size[1])
         # targets[:, 2] = (dst_boxes[:, 2] - self.post_center_range[2]) / (self.post_center_range[5] - self.post_center_range[2])
-        targets[:, 3] = dst_boxes[:, 3].log()
-        targets[:, 4] = dst_boxes[:, 4].log()
-        targets[:, 5] = dst_boxes[:, 5].log()
+        targets[:, 3] = (dst_boxes[:, 3] + 1e-6).log()
+        targets[:, 4] = (dst_boxes[:, 4] + 1e-6).log()
+        targets[:, 5] = (dst_boxes[:, 5] + 1e-6).log()
         targets[:, 2] = dst_boxes[:, 2] + dst_boxes[:, 5] * 0.5  # bottom center to gravity center
         targets[:, 6] = torch.sin(dst_boxes[:, 6])
         targets[:, 7] = torch.cos(dst_boxes[:, 6])
         if self.code_size == 10:
             targets[:, 8:10] = dst_boxes[:, 7:]
         return targets
+    
+    def encode_center(self, center):
+        assert center.shape[1] == 2
+        center = center.clone()
+        center[:, 0] = (center[:, 0] - self.pc_range[0]) / (self.out_size_factor * self.voxel_size[0])
+        center[:, 1] = (center[:, 1] - self.pc_range[1]) / (self.out_size_factor * self.voxel_size[1])
+        return center
+
+    def decode_center(self, center):
+        assert center.shape[1] == 2
+        center = center.clone()
+        # change size to real world metric
+        center[:, 0, :] = center[:, 0, :] * self.out_size_factor * self.voxel_size[0] + self.pc_range[0]
+        center[:, 1, :] = center[:, 1, :] * self.out_size_factor * self.voxel_size[1] + self.pc_range[1]
+        return center
+
+    def decode_box(self, rot, dim, center, height, vel):
+        # change size to real world metric
+        center[:, 0, :] = center[:, 0, :] * self.out_size_factor * self.voxel_size[0] + self.pc_range[0]
+        center[:, 1, :] = center[:, 1, :] * self.out_size_factor * self.voxel_size[1] + self.pc_range[1]
+        # center[:, 2, :] = center[:, 2, :] * (self.post_center_range[5] - self.post_center_range[2]) + self.post_center_range[2]
+        dim[:, 0, :] = dim[:, 0, :].exp()
+        dim[:, 1, :] = dim[:, 1, :].exp()
+        dim[:, 2, :] = dim[:, 2, :].exp()
+        height = height - dim[:, 2:3, :] * 0.5  # gravity center to bottom center
+        rots, rotc = rot[:, 0:1, :], rot[:, 1:2, :]
+        rot = torch.atan2(rots, rotc)
+        if vel is None:
+            final_box_preds = torch.cat([center, height, dim, rot], dim=1).permute(0, 2, 1)
+        else:
+            final_box_preds = torch.cat([center, height, dim, rot, vel], dim=1).permute(0, 2, 1)
+        return final_box_preds
 
     def decode(self, heatmap, rot, dim, center, height, vel, filter=False):
         """Decode bboxes.

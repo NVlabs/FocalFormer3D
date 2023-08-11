@@ -130,6 +130,15 @@ class HungarianAssigner3D(BaseAssigner):
         # weighted sum of above three costs
         cost = cls_cost + reg_cost + iou_cost
 
+        if torch.any(torch.isnan(cost)):
+            print('Found nan in loss')
+            print(f'Check cls_cost {torch.any(torch.isnan(cls_cost))}')
+            print(f'Check reg_cost {torch.any(torch.isnan(reg_cost))}')
+            print(f'Check iou {torch.any(torch.isnan(iou))}')
+            print(f'Check iou_cost {torch.any(torch.isnan(iou_cost))}')
+            print(f'Check cls_pred {torch.any(torch.isnan(cls_pred[0]))}')
+            print(f'Check bboxes {torch.any(torch.isnan(bboxes))}')
+
         # 3. do Hungarian matching on CPU using linear_sum_assignment
         cost = cost.detach().cpu()
         if linear_sum_assignment is None:

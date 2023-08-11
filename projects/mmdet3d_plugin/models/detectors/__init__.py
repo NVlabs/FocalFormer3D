@@ -1,3 +1,1 @@
-from .deepinteraction import DeepInteraction
-
-__all__ = ['DeepInteraction']
+from .focalformer3d import FocalFormer3D

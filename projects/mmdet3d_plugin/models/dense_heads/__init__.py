@@ -1,3 +1,2 @@
-from .deepinteraction_decoder import DeepInteractionDecoder
+from .focal_decoder import FocalDecoder
 
-__all__ = ['DeepInteractionDecoder']

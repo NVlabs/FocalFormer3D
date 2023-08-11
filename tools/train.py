@@ -1,6 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from __future__ import division
 
+import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import argparse
 import copy
 import mmcv
@@ -91,6 +95,17 @@ def parse_args():
     return args
 
 
+def print_grad_status(model):
+    """Call this function after losses.backward()
+    and it will find out all variables without grad, which
+    means that the varaible is not in the graph.
+    """
+    for name, p in model.named_parameters():
+        print('{:60s}{:15s}{:15s}{}'.format(name,
+            '(Trainable)' if p.requires_grad else '(Fixed)',
+            '(Has grad):' if p.grad is not None else '(No grad backward):',
+            list(p.shape)))
+
 def main():
     args = parse_args()
 
@@ -138,8 +153,17 @@ def main():
         # use config filename as default work_dir if cfg.work_dir is None
         cfg.work_dir = osp.join('./work_dirs',
                                 osp.splitext(osp.basename(args.config))[0])
-    if args.resume_from is not None:
-        cfg.resume_from = args.resume_from
+    if args.resume_from is None:
+        import glob
+        import re
+        pth_files = [i for i in glob.glob(f'{cfg.work_dir}/epoch_*.pth') if re.match(r'.*epoch_[0-9]+.pth', i)]
+        if len(pth_files) > 0:
+            pth_files.sort(key=lambda f: osp.getmtime(f))
+            args.resume_from = pth_files[-1]
+            print(f'Found {len(pth_files)} snapshots, Resume from the latest one: {args.resume_from}')
+            n_epoch = int(args.resume_from.split('epoch_')[-1].split('.pth')[0])
+    # if args.resume_from is not None:
+    cfg.resume_from = args.resume_from
     if args.gpu_ids is not None:
         cfg.gpu_ids = args.gpu_ids
     else:
@@ -206,8 +230,13 @@ def main():
         train_cfg=cfg.get('train_cfg'),
         test_cfg=cfg.get('test_cfg'))
     model.init_weights()
+    sync_bn = True
+    if distributed and sync_bn:
+        model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
+        print('Convert to SyncBatchNorm')
 
     logger.info(f'Model:\n{model}')
+    
     datasets = [build_dataset(cfg.data.train)]
     if len(cfg.workflow) == 2:
         val_dataset = copy.deepcopy(cfg.data.val)
@@ -219,8 +248,9 @@ def main():
         # set test_mode=False here in deep copied config
         # which do not affect AP/AR calculation later
         # refer to https://mmdetection3d.readthedocs.io/en/latest/tutorials/customize_runtime.html#customize-workflow  # noqa
-        val_dataset.test_mode = False
+        # val_dataset.test_mode = False
         datasets.append(build_dataset(val_dataset))
+
     if cfg.checkpoint_config is not None:
         # save mmdet version, config file content and class names in
         # checkpoints as meta data
@@ -234,6 +264,34 @@ def main():
             if hasattr(datasets[0], 'PALETTE') else None)
     # add an attribute for visualization convenience
     model.CLASSES = datasets[0].CLASSES
+
+    if 'load_img_from' in cfg and cfg.load_img_from:
+        print(f'>>> load image from {cfg.load_img_from}')
+        checkpoint= torch.load(cfg.load_img_from, map_location='cpu')
+        state_dict = checkpoint['state_dict']
+        img_state_dict = {k:v for k, v in state_dict.items() if k.startswith('img_') or k.startswith('imgpts_neck.cam_lss')}
+        loaded_stat = model.load_state_dict(img_state_dict, strict=False)
+
+        model_keys = set([i.split('.')[0] for i in model.state_dict()])
+        missing_keys = set([i.split('.')[0] for i in loaded_stat.missing_keys])
+        unexpected_keys = set([i.split('.')[0] for i in loaded_stat.unexpected_keys])
+        print('loaded keys (first)', model_keys - missing_keys)
+        print('missing keys (first)', missing_keys)
+        print('unexpected keys (first)', unexpected_keys)
+
+    if 'load_from' in cfg and cfg.load_from:
+        print(f'>>> load all from {cfg.load_from}')
+        checkpoint= torch.load(cfg.load_from, map_location='cpu')
+        state_dict = checkpoint['state_dict']
+        loaded_stat = model.load_state_dict(state_dict, strict=False)
+
+        model_keys = set([i.split('.')[0] for i in model.state_dict()])
+        missing_keys = set([i.split('.')[0] for i in loaded_stat.missing_keys])
+        unexpected_keys = set([i.split('.')[0] for i in loaded_stat.unexpected_keys])
+        print('loaded keys (first)', model_keys - missing_keys)
+        print('missing keys (first)', missing_keys)
+        print('unexpected keys (first)', unexpected_keys)
+
     train_model(
         model,
         datasets,

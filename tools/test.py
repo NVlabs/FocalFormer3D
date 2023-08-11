@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 import mmcv
@@ -38,6 +42,7 @@ def parse_args():
         '--eval',
         type=str,
         nargs='+',
+        default=['bbox'],
         help='evaluation metrics, which depends on the dataset, e.g., "bbox",'
         ' "segm", "proposal" for COCO, and "mAP", "recall" for PASCAL VOC')
     parser.add_argument('--show', action='store_true', help='show results')
@@ -108,6 +113,13 @@ def main():
          'results / save the results) with the argument "--out", "--eval"'
          ', "--format-only", "--show" or "--show-dir"')
 
+    if args.format_only:
+        print('Only for submission ...')
+        args.eval = None 
+
+    if 'waymo' in args.config.lower():
+        args.eval = ['waymo']
+
     if args.eval and args.format_only:
         raise ValueError('--eval and --format_only cannot be both specified')
 
@@ -154,15 +166,12 @@ def main():
     # in case the test dataset is concatenated
     samples_per_gpu = 1
     if isinstance(cfg.data.test, dict):
-        cfg.data.test.test_mode = True
         samples_per_gpu = cfg.data.test.pop('samples_per_gpu', 1)
         if samples_per_gpu > 1:
             # Replace 'ImageToTensor' to 'DefaultFormatBundle'
             cfg.data.test.pipeline = replace_ImageToTensor(
                 cfg.data.test.pipeline)
     elif isinstance(cfg.data.test, list):
-        for ds_cfg in cfg.data.test:
-            ds_cfg.test_mode = True
         samples_per_gpu = max(
             [ds_cfg.pop('samples_per_gpu', 1) for ds_cfg in cfg.data.test])
         if samples_per_gpu > 1:
@@ -195,21 +204,23 @@ def main():
     fp16_cfg = cfg.get('fp16', None)
     if fp16_cfg is not None:
         wrap_fp16_model(model)
-    checkpoint = load_checkpoint(model, args.checkpoint, map_location='cpu')
+    if args.checkpoint != 'none':
+        checkpoint = load_checkpoint(model, args.checkpoint, map_location='cpu')
     if args.fuse_conv_bn:
         model = fuse_conv_bn(model)
     # old versions did not save class info in checkpoints, this walkaround is
     # for backward compatibility
-    if 'CLASSES' in checkpoint.get('meta', {}):
-        model.CLASSES = checkpoint['meta']['CLASSES']
-    else:
-        model.CLASSES = dataset.CLASSES
-    # palette for visualization in segmentation tasks
-    if 'PALETTE' in checkpoint.get('meta', {}):
-        model.PALETTE = checkpoint['meta']['PALETTE']
-    elif hasattr(dataset, 'PALETTE'):
-        # segmentation dataset has `PALETTE` attribute
-        model.PALETTE = dataset.PALETTE
+    if args.checkpoint != 'none':
+        if 'CLASSES' in checkpoint.get('meta', {}):
+            model.CLASSES = checkpoint['meta']['CLASSES']
+        else:
+            model.CLASSES = dataset.CLASSES
+        # palette for visualization in segmentation tasks
+        if 'PALETTE' in checkpoint.get('meta', {}):
+            model.PALETTE = checkpoint['meta']['PALETTE']
+        elif hasattr(dataset, 'PALETTE'):
+            # segmentation dataset has `PALETTE` attribute
+            model.PALETTE = dataset.PALETTE
 
     if not distributed:
         model = MMDataParallel(model, device_ids=[0])
@@ -229,6 +240,7 @@ def main():
             mmcv.dump(outputs, args.out)
         kwargs = {} if args.eval_options is None else args.eval_options
         if args.format_only:
+            kwargs['jsonfile_prefix'] = './work_dirs/submissions/'
             dataset.format_results(outputs, **kwargs)
         if args.eval:
             eval_kwargs = cfg.get('evaluation', {}).copy()
