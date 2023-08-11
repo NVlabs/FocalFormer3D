@@ -5,6 +5,8 @@
 
 ## News
 
+- **(2023/8/10)** Code released.
+- **(2023/7/13)** Paper accepted by ICCV.
 - **(2023/5/8)** Our single multi-modal fusion model FocalFormer3D-F outshines all other non-TTA approaches on [nuScenes Detection benchmark](https://www.nuscenes.org/object-detection?externalData=all&mapData=all&modalities=Any).
 - **(2023/3/10)** FocalFormer3D ranks first on [nuScenes LiDAR Detection benchmark](https://www.nuscenes.org/object-detection?externalData=all&mapData=all&modalities=Lidar).
 - **(2023/3/10)** FocalFormer3D ranks first on [nuScenes LiDAR Tracking benchmark](https://www.nuscenes.org/tracking?externalData=all&mapData=all&modalities=Lidar).
