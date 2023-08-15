@@ -30,10 +30,10 @@
 
 |   Model   | Modality | mAP  | NDS  | Checkpoint |
 | :-------: | :------: | :--: | :--: | :--------: |
-| FocalFormer3D-F |   C+L    | 70.5 | 73.1 | [FocalFormer3D_LC.pth](https://drive.google.com/file/d/1yJyj7NrGLtj0j_tP3-vU0P0UflA-AmCh/view?usp=sharing) |
-| FocalFormer3D |   L    | 66.4 | 70.9 | [FocalFormer3D_L.pth](https://drive.google.com/file/d/1OMj00n_pbAotlGi2JyqptYSgpt6mfyu5/view?usp=sharing) |
-| DeformFormer3D |  L   | 65.5 | 70.7 | [DeformFormer3D_L.pth](https://drive.google.com/file/d/1kNgeqpnseyortg92RpYgXfDpYelsZZph/view?usp=sharing) |
-| DeformFormer3D-R50 |  C   | 30.0 | 36.3 | [DeformFormer3D_C_R50.pth](https://drive.google.com/file/d/1gxITap9tO0PhbdG1FzvgfkB7seaGEaGm/view?usp=sharing) |
+| [FocalFormer3D-F](https://github.com/NVlabs/FocalFormer3D/blob/master/projects/configs/focalformer3d/FocalFormer3D_LC.py) |   C+L    | 70.5 | 73.1 | [FocalFormer3D_LC.pth](https://drive.google.com/file/d/1yJyj7NrGLtj0j_tP3-vU0P0UflA-AmCh/view?usp=sharing) |
+| [FocalFormer3D](https://github.com/NVlabs/FocalFormer3D/blob/master/projects/configs/focalformer3d/FocalFormer3D_L.py) |   L    | 66.4 | 70.9 | [FocalFormer3D_L.pth](https://drive.google.com/file/d/1OMj00n_pbAotlGi2JyqptYSgpt6mfyu5/view?usp=sharing) |
+| [DeformFormer3D](https://github.com/NVlabs/FocalFormer3D/blob/master/projects/configs/focalformer3d/DeformFormer3D_L.py) |  L   | 65.5 | 70.7 | [DeformFormer3D_L.pth](https://drive.google.com/file/d/1kNgeqpnseyortg92RpYgXfDpYelsZZph/view?usp=sharing) |
+| [DeformFormer3D-R50](https://github.com/NVlabs/FocalFormer3D/blob/master/projects/configs/focalformer3d/DeformFormer3D_C_R50.py) |  C   | 30.0 | 36.3 | [DeformFormer3D_C_R50.pth](https://drive.google.com/file/d/1gxITap9tO0PhbdG1FzvgfkB7seaGEaGm/view?usp=sharing) |
 
 ### 3D Object Detection (on Waymo validation set)
 
@@ -41,10 +41,10 @@ Since WOD does not allow distributing the pretrained weights, we only report the
 
 |   Model   | Modality | Overall_L2 | Veh_L2 | Ped_L2 | Cyc_L2  |
 | :-------: | :------: | :-------: | :--: | :--: | :--: | 
-| FocalFormer3D (1/5 split) |   L    | 68.1 / 65.6 | 66.4 / 65.9 | 69.0 / 62.8 | 69.0 / 67.9 |
-| DeformFormer3D (1/5 split) |  L   | 67.2 / 64.5 | 65.8 / 65.3 | 68.3 / 61.9 | 67.4 / 66.4 |
-| FocalFormer3D |   L    | 71.5 / 69.0 | 68.1 / 67.6 | 72.7 / 66.8 | 73.7 / 72.6 |
-| DeformFormer3D |  L   | 70.9 / 68.4 | 67.7 / 67.3 | 72.4 / 66.4 | 72.6 / 71.4 |
+| [FocalFormer3D](https://github.com/NVlabs/FocalFormer3D/blob/master/projects/configs/focalformer3d/FocalFormer3D_Waymo15_L.py) (1/5 split) |   L    | 68.1 / 65.6 | 66.4 / 65.9 | 69.0 / 62.8 | 69.0 / 67.9 |
+| [DeformFormer3D](https://github.com/NVlabs/FocalFormer3D/blob/master/projects/configs/focalformer3d/DeformFormer3D_Waymo15_L.py) (1/5 split) |  L   | 67.2 / 64.5 | 65.8 / 65.3 | 68.3 / 61.9 | 67.4 / 66.4 |
+| [FocalFormer3D](https://github.com/NVlabs/FocalFormer3D/blob/master/projects/configs/focalformer3d/FocalFormer3D_Waymo_L.py) |   L    | 71.5 / 69.0 | 68.1 / 67.6 | 72.7 / 66.8 | 73.7 / 72.6 |
+| [DeformFormer3D](https://github.com/NVlabs/FocalFormer3D/blob/master/projects/configs/focalformer3d/DeformFormer3D_Waymo_L.py) |  L   | 70.9 / 68.4 | 67.7 / 67.3 | 72.4 / 66.4 | 72.6 / 71.4 |
 
 ## Get Started
 
@@ -62,7 +62,7 @@ bash tools/dist_train.sh projects/configs/focalformer3d/DeformFormer3D_L.py 8
 # finetune focalformer3d with 8 GPUs
 bash tools/dist_train.sh projects/configs/focalformer3d/FocalFormer3D_L.py 8
 # test with 8 GPUs
-bash tools/dist_test.sh projects/configs/nuscenes/FocalFormer3D_L.py ${CHECKPOINT_FILE} 8 
+bash tools/dist_test.sh projects/configs/focalformer3d/FocalFormer3D_L.py ${CHECKPOINT_FILE} 8 
 ```
 
 **For Submission**
@@ -76,7 +76,7 @@ At the inference stage,
 2. Execute the following command:
 ```shell
 # test with 8 GPUs
-bash tools/dist_test.sh projects/configs/nuscenes/FocalFormer3D_L.py ${CHECKPOINT_FILE} 8 --format-only
+bash tools/dist_test.sh projects/configs/focalformer3d/FocalFormer3D_L.py ${CHECKPOINT_FILE} 8 --format-only
 ```
 The test results will be saved in the ./work_dirs/submissions/ directory, as specified in tools/test.py.
 
