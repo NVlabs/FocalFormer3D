@@ -37,7 +37,7 @@
 
 ### 3D Object Detection (on Waymo validation set)
 
-Since WOD does not allow distributing the pretrained weights, we only report the model results trained on the full training split and 20\% training split of the Waymo dataset. The official metrics mAP/mAPH on the Waymo validataion set are reported as follows. 
+Since WOD does not allow distributing the pretrained weights, we only report the model results trained on the full training split and 20\% training split of the Waymo dataset. The official metrics mAP/mAPH on the Waymo validation set are reported as follows. 
 
 |   Model   | Modality | Overall_L2 | Veh_L2 | Ped_L2 | Cyc_L2  |
 | :-------: | :------: | :-------: | :--: | :--: | :--: | 
