@@ -41,8 +41,8 @@ Since WOD does not allow distributing the pretrained weights, we only report the
 
 |   Model   | Modality | Overall_L2 | Veh_L2 | Ped_L2 | Cyc_L2  |
 | :-------: | :------: | :-------: | :--: | :--: | :--: | 
-| [FocalFormer3D](https://github.com/NVlabs/FocalFormer3D/blob/master/projects/configs/focalformer3d/FocalFormer3D_Waymo15_L.py) (1/5 split) |   L    | 68.1 / 65.6 | 66.4 / 65.9 | 69.0 / 62.8 | 69.0 / 67.9 |
-| [DeformFormer3D](https://github.com/NVlabs/FocalFormer3D/blob/master/projects/configs/focalformer3d/DeformFormer3D_Waymo15_L.py) (1/5 split) |  L   | 67.2 / 64.5 | 65.8 / 65.3 | 68.3 / 61.9 | 67.4 / 66.4 |
+| [FocalFormer3D (1/5 split)](https://github.com/NVlabs/FocalFormer3D/blob/master/projects/configs/focalformer3d/FocalFormer3D_Waymo15_L.py)  |   L    | 68.1 / 65.6 | 66.4 / 65.9 | 69.0 / 62.8 | 69.0 / 67.9 |
+| [DeformFormer3D (1/5 split)](https://github.com/NVlabs/FocalFormer3D/blob/master/projects/configs/focalformer3d/DeformFormer3D_Waymo15_L.py)  |  L   | 67.2 / 64.5 | 65.8 / 65.3 | 68.3 / 61.9 | 67.4 / 66.4 |
 | [FocalFormer3D](https://github.com/NVlabs/FocalFormer3D/blob/master/projects/configs/focalformer3d/FocalFormer3D_Waymo_L.py) |   L    | 71.5 / 69.0 | 68.1 / 67.6 | 72.7 / 66.8 | 73.7 / 72.6 |
 | [DeformFormer3D](https://github.com/NVlabs/FocalFormer3D/blob/master/projects/configs/focalformer3d/DeformFormer3D_Waymo_L.py) |  L   | 70.9 / 68.4 | 67.7 / 67.3 | 72.4 / 66.4 | 72.6 / 71.4 |
 
@@ -65,7 +65,11 @@ bash tools/dist_train.sh projects/configs/focalformer3d/FocalFormer3D_L.py 8
 bash tools/dist_test.sh projects/configs/focalformer3d/FocalFormer3D_L.py ${CHECKPOINT_FILE} 8 
 ```
 
-**For Submission**
+**d. For Test-time Aug**
+
+The test-time augmentation configuration can be found in [FocalFormer3D_LC_TTA.py](https://github.com/NVlabs/FocalFormer3D/blob/master/projects/configs/focalformer3d/FocalFormer3D_LC_TTA.py). Available augmentations include double-flipping and 3-scale scaling.
+
+**e. For Submission**
 
 Update your configuration file and re-train the model, follow these steps:
 1. Replace all instances of xxx_train.pkl with xxx_trainval.pkl in the config file.
@@ -82,6 +86,7 @@ The test results will be saved in the ./work_dirs/submissions/ directory, as spe
 
 ## TODO
 - [x] Release Code
+- [x] Test-Time Aug
 
 ## Acknowledgement
 Many thanks to the following open-source projects:
