@@ -194,7 +194,7 @@ class FocalEncoder(nn.Module):
                     new_img_feat, depth = self.cam_lss(img_feats.view(batch_size, -1, *img_feats.shape[-3:]), rots=rots, trans=trans, img_metas=img_metas)
 
                 if not self.input_pts and not self.multistage_heatmap:
-                    return None, [new_img_feat, None]
+                    return None, [new_img_feat, new_img_feat]
             else:
                 new_img_feat = self.shared_conv_img(img_feats)
         else:

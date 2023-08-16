@@ -246,7 +246,6 @@ model = dict(
         heatmap_box=False,
         thin_heatmap_box=False,
         multiscale=True,
-        multiscale_convs=True,
         multistage_heatmap=multistage_heatmap,
         mask_heatmap_mode='poscls',
         input_img=False,
