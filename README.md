@@ -5,15 +5,23 @@
 
 > [[Paper]](https://arxiv.org/abs/2308.04556)
 
-> False negatives (FN) in 3D object detection, {\em e.g.}, missing predictions of pedestrians, vehicles, or other obstacles, can lead to potentially dangerous situations in autonomous driving. While being fatal, this issue is understudied in many current 3D detection methods. In this work, we propose Hard Instance Probing (HIP), a general pipeline that identifies \textit{FN} in a multi-stage manner and guides the models to focus on excavating difficult instances. For 3D object detection, we instantiate this method as FocalFormer3D, a simple yet effective detector that excels at excavating difficult objects and improving prediction recall. FocalFormer3D features a multi-stage query generation to discover hard objects and a box-level transformer decoder to efficiently distinguish objects from massive object candidates. Experimental results on the nuScenes and Waymo datasets validate the superior performance of FocalFormer3D. The advantage leads to strong performance on both detection and tracking, in both LiDAR and multi-modal settings. Notably, FocalFormer3D achieves a 70.5 mAP and 73.9 NDS on nuScenes detection benchmark, while the nuScenes tracking benchmark shows 72.1 AMOTA, both ranking 1st place on the nuScenes LiDAR leaderboard.
+### Abstract
+
+False negatives (FN) in 3D object detection, {\em e.g.}, missing predictions of pedestrians, vehicles, or other obstacles, can lead to potentially dangerous situations in autonomous driving. While being fatal, this issue is understudied in many current 3D detection methods. In this work, we propose Hard Instance Probing (HIP), a general pipeline that identifies \textit{FN} in a multi-stage manner and guides the models to focus on excavating difficult instances. For 3D object detection, we instantiate this method as FocalFormer3D, a simple yet effective detector that excels at excavating difficult objects and improving prediction recall. FocalFormer3D features a multi-stage query generation to discover hard objects and a box-level transformer decoder to efficiently distinguish objects from massive object candidates. Experimental results on the nuScenes and Waymo datasets validate the superior performance of FocalFormer3D. The advantage leads to strong performance on both detection and tracking, in both LiDAR and multi-modal settings. Notably, FocalFormer3D achieves a 70.5 mAP and 73.9 NDS on nuScenes detection benchmark, while the nuScenes tracking benchmark shows 72.1 AMOTA, both ranking 1st place on the nuScenes LiDAR leaderboard.
+
+### Hard Instance Probing 
+
+<div align='center'>
+<img src="./doc/hip.png" height="360px" width="460px"> 
+</div>
 
 ## News
 
 - **(2023/8/11)** 🔥 We release the code of FocalFormer3D.
 - **(2023/7/14)** FocalFormer3D is accepted by ICCV 2023.
-- **(2023/5/8)** Our single multi-modal fusion model FocalFormer3D-F outshines all other non-TTA approaches on [nuScenes Detection benchmark](https://www.nuscenes.org/object-detection?externalData=all&mapData=all&modalities=Any).
-- **(2023/3/10)** FocalFormer3D ranks first on [nuScenes LiDAR Detection benchmark](https://www.nuscenes.org/object-detection?externalData=all&mapData=all&modalities=Lidar).
-- **(2023/3/10)** FocalFormer3D ranks first on [nuScenes LiDAR Tracking benchmark](https://www.nuscenes.org/tracking?externalData=all&mapData=all&modalities=Lidar).
+- **(2023/5/8)** 🏆 Our single multi-modal fusion model FocalFormer3D-F outshines all other non-TTA approaches on [nuScenes Detection benchmark](https://www.nuscenes.org/object-detection?externalData=all&mapData=all&modalities=Any).
+- **(2023/3/10)** 🏆 FocalFormer3D ranks first on [nuScenes LiDAR Detection benchmark](https://www.nuscenes.org/object-detection?externalData=all&mapData=all&modalities=Lidar).
+- **(2023/3/10)** 🏆 FocalFormer3D ranks first on [nuScenes LiDAR Tracking benchmark](https://www.nuscenes.org/tracking?externalData=all&mapData=all&modalities=Lidar).
 
 
 ## Results
@@ -50,7 +58,7 @@ Since WOD does not allow distributing the pretrained weights, we only report the
 
 **a. Installation and data preparation.**
 
-This implementation is build upon [mmdetection3d](https://github.com/open-mmlab/mmdetection3d), please follow the steps in [install.md](./install.md) to prepare the environment.
+This implementation is build upon [mmdetection3d](https://github.com/open-mmlab/mmdetection3d), please follow the steps in [install.md](./doc/install.md) to prepare the environment.
 
 **b. Get the pretrained nuImage-pretrained image backbone weights.**
 Downloads the [pretrained backbone weights](https://drive.google.com/file/d/1IaLMcRu4SYTqcD6K1HF5UjfnRICB_IQM/view?usp=sharing) to pretrained/.
