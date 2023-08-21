@@ -1,5 +1,5 @@
-# FocalFormer3D : Focusing on Hard Instance for 3D Object Detection
-> **FocalFormer3D : Focusing on Hard Instance for 3D Object Detection**, ICCV 2023.            
+# FocalFormer3D: Focusing on Hard Instance for 3D Object Detection
+> **FocalFormer3D: Focusing on Hard Instance for 3D Object Detection**, ICCV 2023.            
 
 > [Yilun Chen](http://yilunchen.com/about/), [Zhiding Yu](https://chrisding.github.io/), [Yukang Chen](https://yukangchen.com/), [Shiyi Lan](https://voidrank.github.io/), [Anima Anandkumar](http://tensorlab.cms.caltech.edu/users/anima/), [Jiaya Jia](https://jiaya.me/), [Jose M. Alvarez](https://alvarezlopezjosem.github.io/)
 
@@ -111,7 +111,7 @@ For business inquiries, please visit our website and submit the form: NVIDIA Res
 
 ```bibtex
 @InProceedings{focalformer3d,
-  title={FocalFormer3D : Focusing on Hard Instance for 3D Object Detection},
+  title={FocalFormer3D: Focusing on Hard Instance for 3D Object Detection},
   author={Chen, Yilun and Yu, Zhiding and Chen, Yukang and Lan, Shiyi and Anandkumar, Anima and Jia, Jiaya and Alvarez, Jose M},
   journal={ICCV},
   year={2023}
