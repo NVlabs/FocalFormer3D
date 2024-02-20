@@ -65,11 +65,11 @@ Downloads the [pretrained backbone weights](https://drive.google.com/file/d/1IaL
 
 **c. Train and evaluation.**
 ```shell
-# train deformformer3d with 8 GPUs
+# First, train deformformer3d with 8 GPUs
 bash tools/dist_train.sh projects/configs/focalformer3d/DeformFormer3D_L.py 8
-# finetune focalformer3d with 8 GPUs
+# Second, finetune focalformer3d with 8 GPUs
 bash tools/dist_train.sh projects/configs/focalformer3d/FocalFormer3D_L.py 8
-# test with 8 GPUs
+# Third, test with 8 GPUs
 bash tools/dist_test.sh projects/configs/focalformer3d/FocalFormer3D_L.py ${CHECKPOINT_FILE} 8 
 ```
 
