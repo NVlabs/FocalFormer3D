@@ -33,7 +33,7 @@ sudo apt install build-essential
 
 ### **Step. 3** Clone FocalFormer3D. 
 ```
-git clone https://github.com/chenyilun95/focalformer3d.git
+git clone https://github.com/NVlabs/FocalFormer3D.git focalformer3d
 cd focalformer3d
 ```
 
